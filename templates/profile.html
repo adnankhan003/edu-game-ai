@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>{{ level_icon }} {{ user['username'] }}</h1>
+        <p>Member since {{ user['created_at'] }} &bull; {{ user['role']|capitalize }}</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid-4 mb-3">
+        <div class="stat-card animate-in animate-delay-1">
+            <div class="stat-icon">⭐</div>
+            <div class="stat-value">{{ total_points }}</div>
+            <div class="stat-label">Total Points</div>
+        </div>
+        <div class="stat-card animate-in animate-delay-2">
+            <div class="stat-icon">🎖️</div>
+            <div class="stat-value">{{ level_name }}</div>
+            <div class="stat-label">Current Level</div>
+        </div>
+        <div class="stat-card animate-in animate-delay-3">
+            <div class="stat-icon">📝</div>
+            <div class="stat-value">{{ quiz_stats['total_quizzes'] }}</div>
+            <div class="stat-label">Quizzes Taken</div>
+        </div>
+        <div class="stat-card animate-in animate-delay-4">
+            <div class="stat-icon">🏆</div>
+            <div class="stat-value">{{ "%.1f"|format(quiz_stats['best_score']) }}%</div>
+            <div class="stat-label">Best Score</div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <!-- Badges -->
+        <div class="card animate-in">
+            <div class="card-header">
+                <h3>🏅 Badges ({{ badges|length }})</h3>
+            </div>
+            {% if badges %}
+            <div class="badge-grid">
+                {% for badge in badges %}
+                <div class="badge-item" title="{{ badge['description'] }}">
+                    <span class="badge-icon">{{ badge['icon'] }}</span>
+                    {{ badge['name'] }}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted">No badges earned yet. Take quizzes to earn badges!</p>
+            {% endif %}
+        </div>
+
+        <!-- Activity -->
+        <div class="card animate-in">
+            <div class="card-header">
+                <h3>📊 Activity Summary</h3>
+            </div>
+            <div class="rec-insight" style="border:none;padding:12px 0;">
+                <div class="rec-insight-icon primary">⏱️</div>
+                <div>
+                    <div class="rec-insight-label">Total Learning Time</div>
+                    <div class="rec-insight-value">{{ "%.0f"|format(activity_stats['total_learning_time']) }} minutes</div>
+                </div>
+            </div>
+            <div class="rec-insight" style="border:none;padding:12px 0;">
+                <div class="rec-insight-icon success">📅</div>
+                <div>
+                    <div class="rec-insight-label">Active Days</div>
+                    <div class="rec-insight-value">{{ activity_stats['active_days'] }} days</div>
+                </div>
+            </div>
+            <div class="rec-insight" style="border:none;padding:12px 0;">
+                <div class="rec-insight-icon warning">📊</div>
+                <div>
+                    <div class="rec-insight-label">Average Score</div>
+                    <div class="rec-insight-value">{{ "%.1f"|format(quiz_stats['avg_score']) }}%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz History -->
+    {% if all_results %}
+    <div class="section-title mt-4"><span class="icon">📋</span> Quiz History</div>
+    <table class="leaderboard-table animate-in">
+        <thead>
+            <tr>
+                <th>Quiz</th>
+                <th>Course</th>
+                <th>Score</th>
+                <th>Percentage</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in all_results %}
+            <tr>
+                <td><strong>{{ r['quiz_title'] }}</strong></td>
+                <td>{{ r['course_title'] }}</td>
+                <td>{{ r['score'] }}/{{ r['total'] }}</td>
+                <td>
+                    <span class="{% if r['percentage'] >= 80 %}risk-low{% elif r['percentage'] >= 50 %}risk-medium{% else %}risk-high{% endif %}">
+                        {{ "%.0f"|format(r['percentage']) }}%
+                    </span>
+                </td>
+                <td class="text-muted">{{ r['completed_at'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</div>
+{% endblock %}

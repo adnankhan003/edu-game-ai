@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>{{ level_icon }} Welcome, {{ user['username'] }}!</h1>
+        <p>Level: <strong>{{ level_name }}</strong> &bull; Keep learning to reach new heights!</p>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="grid-4 mb-3">
+        <div class="stat-card animate-in animate-delay-1">
+            <div class="stat-icon">⭐</div>
+            <div class="stat-value">{{ total_points }}</div>
+            <div class="stat-label">Total Points</div>
+        </div>
+        <div class="stat-card animate-in animate-delay-2">
+            <div class="stat-icon">📝</div>
+            <div class="stat-value">{{ quiz_stats['total_quizzes'] }}</div>
+            <div class="stat-label">Quizzes Taken</div>
+        </div>
+        <div class="stat-card animate-in animate-delay-3">
+            <div class="stat-icon">📊</div>
+            <div class="stat-value">{{ "%.1f"|format(quiz_stats['avg_score']) }}%</div>
+            <div class="stat-label">Average Score</div>
+        </div>
+        <div class="stat-card animate-in animate-delay-4">
+            <div class="stat-icon">⏱️</div>
+            <div class="stat-value">{{ "%.0f"|format(activity_stats['total_learning_time']) }}m</div>
+            <div class="stat-label">Learning Time</div>
+        </div>
+    </div>
+
+    <!-- Level Progress -->
+    <div class="card mb-3 animate-in">
+        <div class="card-header">
+            <h3>{{ level_icon }} Level Progress: {{ level_name }}</h3>
+            {% if next_threshold %}
+            <span class="text-muted">{{ total_points }} / {{ next_threshold }} XP</span>
+            {% else %}
+            <span class="text-muted">Max Level Reached! 🎉</span>
+            {% endif %}
+        </div>
+        {% if next_threshold %}
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill" style=`width: {{ (total_points / next_threshold * 100)|int }}%`></div>
+        </div>
+        {% else %}
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill" style="width: 100%"></div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="grid-2">
+        <!-- Badges -->
+        <div class="card animate-in animate-delay-1">
+            <div class="card-header">
+                <h3>🏅 Badges Earned</h3>
+                <span class="text-muted">{{ badges|length }}</span>
+            </div>
+            {% if badges %}
+            <div class="badge-grid">
+                {% for badge in badges %}
+                <div class="badge-item" title="{{ badge['description'] }}">
+                    <span class="badge-icon">{{ badge['icon'] }}</span>
+                    {{ badge['name'] }}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted">Complete quizzes to earn your first badge!</p>
+            {% endif %}
+        </div>
+
+        <!-- Recent Quiz Results -->
+        <div class="card animate-in animate-delay-2">
+            <div class="card-header">
+                <h3>📋 Recent Results</h3>
+            </div>
+            {% if recent_results %}
+            {% for r in recent_results %}
+            <div class="lesson-item" style="cursor: default;">
+                <div class="score-circle {% if r['percentage'] >= 80 %}score-high{% elif r['percentage'] >= 50 %}score-medium{% else %}score-low{% endif %}" style="width:44px;height:44px;font-size:0.8rem;">
+                    {{ "%.0f"|format(r['percentage']) }}%
+                </div>
+                <div>
+                    <strong>{{ r['quiz_title'] }}</strong>
+                    <div class="text-muted" style="font-size:0.8rem;">{{ r['course_title'] }}</div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p class="text-muted">Take a quiz to see your results here!</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="section-title mt-4"><span class="icon">🚀</span> Quick Actions</div>
+    <div class="grid-3 mb-3">
+        <a href="{{ url_for('courses.course_list') }}" class="card" style="text-decoration:none;text-align:center;">
+            <div style="font-size:2rem;margin-bottom:8px;">📚</div>
+            <h3>Browse Courses</h3>
+            <p class="text-muted" style="font-size:0.85rem;">Explore available courses</p>
+        </a>
+        <a href="{{ url_for('gamification.leaderboard') }}" class="card" style="text-decoration:none;text-align:center;">
+            <div style="font-size:2rem;margin-bottom:8px;">🏆</div>
+            <h3>Leaderboard</h3>
+            <p class="text-muted" style="font-size:0.85rem;">See where you rank</p>
+        </a>
+        <a href="{{ url_for('ml.recommendations') }}" class="card" style="text-decoration:none;text-align:center;">
+            <div style="font-size:2rem;margin-bottom:8px;">🤖</div>
+            <h3>AI Recommendations</h3>
+            <p class="text-muted" style="font-size:0.85rem;">Personalized suggestions</p>
+        </a>
+    </div>
+</div>
+{% endblock %}

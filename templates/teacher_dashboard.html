@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}Teacher Dashboard{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>📊 Teacher Analytics Dashboard</h1>
+        <p>Monitor student performance, engagement, and predicted success</p>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="grid-4 mb-3">
+        <div class="stat-card animate-in animate-delay-1">
+            <div class="stat-icon">👥</div>
+            <div class="stat-value">{{ summary['total_students'] }}</div>
+            <div class="stat-label">Total Students</div>
+        </div>
+        <div class="stat-card animate-in animate-delay-2">
+            <div class="stat-icon">✅</div>
+            <div class="stat-value">{{ summary['active_students'] }}</div>
+            <div class="stat-label">Active Students</div>
+        </div>
+        <div class="stat-card animate-in animate-delay-3">
+            <div class="stat-icon">📊</div>
+            <div class="stat-value">{{ summary['avg_score'] }}%</div>
+            <div class="stat-label">Avg Platform Score</div>
+        </div>
+        <div class="stat-card animate-in animate-delay-4">
+            <div class="stat-icon">⚠️</div>
+            <div class="stat-value">{{ summary['at_risk_count'] }}</div>
+            <div class="stat-label">At-Risk Students</div>
+        </div>
+    </div>
+
+    <!-- Student Performance Table -->
+    <div class="section-title"><span class="icon">👥</span> Student Performance</div>
+    <div class="card mb-3 animate-in" style="overflow-x:auto;">
+        {% if students %}
+        <table class="student-table">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Level</th>
+                    <th>Points</th>
+                    <th>Quizzes</th>
+                    <th>Avg Score</th>
+                    <th>Best Score</th>
+                    <th>Learning Time</th>
+                    <th>Active Days</th>
+                    <th>Success Pred.</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in students %}
+                <tr>
+                    <td>
+                        <strong>{{ s['username'] }}</strong>
+                        <div style="font-size:0.75rem;color:var(--text-muted);">{{ s['email'] }}</div>
+                    </td>
+                    <td>{{ s['level_icon'] }} {{ s['level_name'] }}</td>
+                    <td><strong>{{ s['total_points'] }}</strong></td>
+                    <td>{{ s['total_quizzes'] }}</td>
+                    <td>
+                        <span class="{% if s['avg_score'] >= 80 %}risk-low{% elif s['avg_score'] >= 50 %}risk-medium{% else %}risk-high{% endif %}">
+                            {{ s['avg_score'] }}%
+                        </span>
+                    </td>
+                    <td>{{ s['best_score'] }}%</td>
+                    <td>{{ s['learning_time'] }} min</td>
+                    <td>{{ s['active_days'] }}</td>
+                    <td>
+                        <span class="{% if s['success_probability'] >= 70 %}risk-low{% elif s['success_probability'] >= 40 %}risk-medium{% else %}risk-high{% endif %}">
+                            {{ s['success_probability'] }}%
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-muted text-center" style="padding:40px;">No students registered yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Recent Quiz Attempts -->
+    {% if recent_results %}
+    <div class="section-title"><span class="icon">📋</span> Recent Quiz Attempts</div>
+    <div class="card animate-in" style="overflow-x:auto;">
+        <table class="student-table">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Quiz</th>
+                    <th>Course</th>
+                    <th>Score</th>
+                    <th>Percentage</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in recent_results %}
+                <tr>
+                    <td><strong>{{ r['username'] }}</strong></td>
+                    <td>{{ r['quiz_title'] }}</td>
+                    <td>{{ r['course_title'] }}</td>
+                    <td>{{ r['score'] }}/{{ r['total'] }}</td>
+                    <td>
+                        <span class="{% if r['percentage'] >= 80 %}risk-low{% elif r['percentage'] >= 50 %}risk-medium{% else %}risk-high{% endif %}">
+                            {{ "%.0f"|format(r['percentage']) }}%
+                        </span>
+                    </td>
+                    <td class="text-muted">{{ r['completed_at'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

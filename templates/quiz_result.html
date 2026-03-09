@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Quiz Result{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="quiz-container">
+        <!-- Score Header -->
+        <div class="result-header animate-in">
+            <div class="result-score">{{ "%.0f"|format(percentage) }}%</div>
+            <div class="result-details">
+                You scored <strong>{{ score }}</strong> out of <strong>{{ total }}</strong> on <strong>{{ quiz['title'] }}</strong>
+            </div>
+            <div class="mt-2">
+                <span style="font-size:1.2rem;">+{{ points_earned }} points earned! ⭐</span>
+            </div>
+        </div>
+
+        <!-- Answer Review -->
+        <div class="section-title"><span class="icon">📋</span> Answer Review</div>
+        {% for q in questions %}
+        <div class="question-card answer-review {% if answers[q['id']]['is_correct'] %}answer-correct{% else %}answer-wrong{% endif %} animate-in">
+            <div class="question-number">Question {{ loop.index }}</div>
+            <div class="question-text">{{ q['question'] }}</div>
+
+            <div style="font-size:0.9rem;">
+                {% if answers[q['id']]['is_correct'] %}
+                <span style="color:var(--accent-success);">✅ Your answer: {{ answers[q['id']]['user_answer'] }} — Correct!</span>
+                {% else %}
+                <span style="color:var(--accent-danger);">❌ Your answer: {{ answers[q['id']]['user_answer'] or 'Not answered' }}</span>
+                <br>
+                <span style="color:var(--accent-success);">✅ Correct answer: {{ answers[q['id']]['correct_answer'] }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="flex gap-2 justify-between mt-3 mb-3">
+            <a href="{{ url_for('courses.course_detail', course_id=course['id']) }}" class="btn btn-secondary">&larr; Back to Course</a>
+            <a href="{{ url_for('ml.recommendations') }}" class="btn btn-primary">🤖 Get AI Recommendations</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

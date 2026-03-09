@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}AI Recommendations{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>🤖 AI-Powered Recommendations</h1>
+        <p>Personalized insights based on your learning patterns using Machine Learning</p>
+    </div>
+
+    <!-- Your Learning Profile -->
+    <div class="section-title"><span class="icon">📊</span> Your Learning Profile</div>
+    <div class="grid-3 mb-3">
+        <div class="rec-insight animate-in animate-delay-1">
+            <div class="rec-insight-icon primary">📝</div>
+            <div>
+                <div class="rec-insight-label">Average Quiz Score</div>
+                <div class="rec-insight-value">{{ quiz_score_avg }}%</div>
+            </div>
+        </div>
+        <div class="rec-insight animate-in animate-delay-2">
+            <div class="rec-insight-icon success">⏱️</div>
+            <div>
+                <div class="rec-insight-label">Learning Time</div>
+                <div class="rec-insight-value">{{ learning_time }} hrs</div>
+            </div>
+        </div>
+        <div class="rec-insight animate-in animate-delay-3">
+            <div class="rec-insight-icon warning">⚡</div>
+            <div>
+                <div class="rec-insight-label">Activity Level</div>
+                <div class="rec-insight-value">{{ activity_level }} / 10</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ML Predictions -->
+    <div class="section-title"><span class="icon">🧠</span> ML Predictions</div>
+    <div class="grid-2 mb-3">
+        <div class="card animate-in animate-delay-1">
+            <div class="card-header">
+                <h3>Recommended Difficulty</h3>
+                <div class="card-icon">🎯</div>
+            </div>
+            <div style="text-align:center;padding:16px 0;">
+                <div style="font-size:2.5rem;font-weight:800;background:var(--gradient-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+                    {{ diff_label }}
+                </div>
+                <p class="text-muted mt-1" style="font-size:0.85rem;">
+                    Our ML model recommends <strong>{{ diff_label|lower }}</strong> content based on your performance.
+                </p>
+            </div>
+            <div class="mt-2">
+                <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:4px;">Confidence Distribution:</div>
+                {% for label, prob in [('Easier', diff_probs[0] if diff_probs|length > 0 else 0), ('Same', diff_probs[1] if diff_probs|length > 1 else 0), ('Harder', diff_probs[2] if diff_probs|length > 2 else 0)] %}
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                    <span style="width:50px;font-size:0.75rem;color:var(--text-secondary);">{{ label }}</span>
+                    <div class="progress-bar-container" style="flex:1;">
+                        {% set bg_val = 'var(--gradient-success)' if label == 'Easier' else 'var(--gradient-secondary)' if label == 'Harder' else 'var(--gradient-primary)' %}
+                        <div class="progress-bar-fill" style=`width:{{ (prob * 100)|int }}%; background: {{ bg_val }};`></div>
+                    </div>
+                    <span style="font-size:0.75rem;color:var(--text-secondary);width:35px;">{{ "%.0f"|format(prob * 100) }}%</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card animate-in animate-delay-2">
+            <div class="card-header">
+                <h3>Success Prediction</h3>
+                <div class="card-icon">🎓</div>
+            </div>
+            <div style="text-align:center;padding:16px 0;">
+                <div class="score-circle {% if success_probability >= 70 %}score-high{% elif success_probability >= 40 %}score-medium{% else %}score-low{% endif %}" style="width:100px;height:100px;font-size:1.8rem;margin:0 auto;">
+                    {{ success_probability }}%
+                </div>
+                <p class="text-muted mt-2" style="font-size:0.85rem;">
+                    {% if success_probability >= 70 %}
+                    🌟 You're on track for success! Keep up the great work.
+                    {% elif success_probability >= 40 %}
+                    💪 You're making progress. More practice will boost your chances!
+                    {% else %}
+                    📚 Focus on foundational topics and take easier quizzes to build confidence.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recommended Quizzes -->
+    {% if recommended_quizzes %}
+    <div class="section-title"><span class="icon">📝</span> Recommended Quizzes</div>
+    <div class="grid-3 mb-3">
+        {% for quiz in recommended_quizzes %}
+        <div class="card animate-in">
+            <div class="card-header">
+                <h3 style="font-size:1rem;">{{ quiz['title'] }}</h3>
+                <span class="difficulty-badge difficulty-{% if quiz['difficulty'] == 'easy' %}beginner{% elif quiz['difficulty'] == 'hard' %}advanced{% else %}intermediate{% endif %}">
+                    {{ quiz['difficulty']|capitalize }}
+                </span>
+            </div>
+            <p class="text-muted mb-2" style="font-size:0.85rem;">{{ quiz['course_title'] }}</p>
+            <a href="{{ url_for('quizzes.take_quiz', quiz_id=quiz['id']) }}" class="btn btn-primary btn-sm">Take Quiz</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Recommended Courses -->
+    {% if recommended_courses %}
+    <div class="section-title"><span class="icon">📚</span> Recommended Courses</div>
+    <div class="grid-3 mb-3">
+        {% for course in recommended_courses %}
+        <a href="{{ url_for('courses.course_detail', course_id=course['id']) }}" class="course-card animate-in" style="text-decoration:none;">
+            <div class="course-category">{{ course['category'] }}</div>
+            <h3>{{ course['title'] }}</h3>
+            <p>{{ course['description'] }}</p>
+            <span class="difficulty-badge difficulty-{{ course['difficulty'] }}">{{ course['difficulty']|capitalize }}</span>
+        </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ lesson['title'] }}{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <p class="text-muted">{{ course['title'] }}</p>
+        <h1>{{ lesson['title'] }}</h1>
+    </div>
+
+    <div class="lesson-content animate-in">
+        {{ lesson['content']|safe }}
+    </div>
+
+    <div class="flex justify-between items-center mt-3">
+        <a href="{{ url_for('courses.course_detail', course_id=course['id']) }}" class="btn btn-secondary">&larr; Back to Course</a>
+
+        <!-- Navigation between lessons -->
+        <div class="flex gap-1">
+            {% for l in lessons %}
+                {% if l['id'] != lesson['id'] %}
+                <a href="{{ url_for('courses.view_lesson', course_id=course['id'], lesson_id=l['id']) }}" class="btn btn-sm btn-secondary">
+                    {{ l['order_num'] }}. {{ l['title'] }}
+                </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

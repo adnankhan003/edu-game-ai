@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="ML-powered personalized learning platform with gamification"
+    />
+    <title>
+      {% block title %}EduGame AI{% endblock %} | ML Education Platform
+    </title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    {% if session.get('user_id') %}
+    <nav class="navbar">
+      <div class="container">
+        <a href="{{ url_for('auth.dashboard') }}" class="navbar-brand">
+          <span>🎓</span> EduGame AI
+        </a>
+        <ul class="nav-links">
+          <li><a href="{{ url_for('auth.dashboard') }}">Dashboard</a></li>
+          <li><a href="{{ url_for('courses.course_list') }}">Courses</a></li>
+          <li>
+            <a href="{{ url_for('gamification.leaderboard') }}">Leaderboard</a>
+          </li>
+          <li><a href="{{ url_for('ml.recommendations') }}">AI Insights</a></li>
+          {% if session.get('role') == 'teacher' %}
+          <li>
+            <a href="{{ url_for('analytics.teacher_dashboard') }}">Analytics</a>
+          </li>
+          {% endif %}
+        </ul>
+        <div class="nav-user">
+          <a href="{{ url_for('auth.profile') }}" class="username"
+            >{{ session.get('username', '') }}</a
+          >
+          <a
+            href="{{ url_for('auth.logout') }}"
+            class="btn btn-sm btn-secondary"
+            >Logout</a
+          >
+        </div>
+      </div>
+    </nav>
+    {% endif %} {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container">
+      <div class="flash-messages">
+        {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %} {% endwith %}
+
+    <main>{% block content %}{% endblock %}</main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>
+          🎓 EduGame AI &mdash; Machine Learning Driven Gamification for
+          Personalized Education
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

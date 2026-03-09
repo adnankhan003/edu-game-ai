@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ course['title'] }}{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>{{ course['title'] }}</h1>
+        <p>{{ course['description'] }}</p>
+        <span class="difficulty-badge difficulty-{{ course['difficulty'] }} mt-1" style="display:inline-block;margin-top:8px;">{{ course['difficulty']|capitalize }}</span>
+    </div>
+
+    <!-- Lessons -->
+    <div class="section-title"><span class="icon">📖</span> Lessons</div>
+    <ul class="lesson-list mb-3">
+        {% for lesson in lessons %}
+        <a href="{{ url_for('courses.view_lesson', course_id=course['id'], lesson_id=lesson['id']) }}" class="lesson-item animate-in animate-delay-{{ loop.index % 4 + 1 }}">
+            <div class="lesson-number">{{ lesson['order_num'] }}</div>
+            <div>
+                <strong>{{ lesson['title'] }}</strong>
+            </div>
+        </a>
+        {% endfor %}
+    </ul>
+
+    <!-- Quizzes -->
+    {% if quizzes %}
+    <div class="section-title"><span class="icon">📝</span> Quizzes</div>
+    <div class="grid-2 mb-3">
+        {% for quiz in quizzes %}
+        <div class="card animate-in">
+            <div class="card-header">
+                <h3>{{ quiz['title'] }}</h3>
+                <span class="difficulty-badge difficulty-{% if quiz['difficulty'] == 'easy' %}beginner{% elif quiz['difficulty'] == 'hard' %}advanced{% else %}intermediate{% endif %}">
+                    {{ quiz['difficulty']|capitalize }}
+                </span>
+            </div>
+            <p class="text-muted mb-2" style="font-size:0.85rem;">Total marks: {{ quiz['total_marks'] }}</p>
+            <a href="{{ url_for('quizzes.take_quiz', quiz_id=quiz['id']) }}" class="btn btn-primary">Take Quiz</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <a href="{{ url_for('courses.course_list') }}" class="btn btn-secondary">&larr; Back to Courses</a>
+</div>
+{% endblock %}

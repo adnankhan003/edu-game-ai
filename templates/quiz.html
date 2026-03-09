@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}{{ quiz['title'] }}{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <p class="text-muted">{{ course['title'] }}</p>
+        <h1>📝 {{ quiz['title'] }}</h1>
+        <p>Answer all {{ questions|length }} questions below, then submit.</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('quizzes.submit_quiz', quiz_id=quiz['id']) }}" class="quiz-container">
+        {% for q in questions %}
+        <div class="question-card animate-in animate-delay-{{ loop.index % 4 + 1 }}">
+            <div class="question-number">Question {{ loop.index }} of {{ questions|length }}</div>
+            <div class="question-text">{{ q['question'] }}</div>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" id="q{{ q['id'] }}_a" name="q_{{ q['id'] }}" value="A" required>
+                    <label for="q{{ q['id'] }}_a">
+                        <span class="option-letter">A</span>
+                        {{ q['option_a'] }}
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q{{ q['id'] }}_b" name="q_{{ q['id'] }}" value="B">
+                    <label for="q{{ q['id'] }}_b">
+                        <span class="option-letter">B</span>
+                        {{ q['option_b'] }}
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q{{ q['id'] }}_c" name="q_{{ q['id'] }}" value="C">
+                    <label for="q{{ q['id'] }}_c">
+                        <span class="option-letter">C</span>
+                        {{ q['option_c'] }}
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q{{ q['id'] }}_d" name="q_{{ q['id'] }}" value="D">
+                    <label for="q{{ q['id'] }}_d">
+                        <span class="option-letter">D</span>
+                        {{ q['option_d'] }}
+                    </label>
+                </li>
+            </ul>
+        </div>
+        {% endfor %}
+
+        <div class="text-center mt-3 mb-3">
+            <button type="submit" class="btn btn-primary btn-lg">Submit Quiz</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
