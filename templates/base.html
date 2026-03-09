@@ -14,40 +14,60 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='css/style.css') }}"
     />
+    <script>
+      // Apply theme early to prevent FOUC
+      (function() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
   </head>
   <body>
-    {% if session.get('user_id') %}
     <nav class="navbar">
       <div class="container">
         <a href="{{ url_for('auth.dashboard') }}" class="navbar-brand">
           <span>🎓</span> EduGame AI
         </a>
         <ul class="nav-links">
+          {% if session.get('user_id') %}
           <li><a href="{{ url_for('auth.dashboard') }}">Dashboard</a></li>
           <li><a href="{{ url_for('courses.course_list') }}">Courses</a></li>
-          <li>
-            <a href="{{ url_for('gamification.leaderboard') }}">Leaderboard</a>
-          </li>
+          <li><a href="{{ url_for('gamification.leaderboard') }}">Leaderboard</a></li>
           <li><a href="{{ url_for('ml.recommendations') }}">AI Insights</a></li>
           {% if session.get('role') == 'teacher' %}
-          <li>
-            <a href="{{ url_for('analytics.teacher_dashboard') }}">Analytics</a>
-          </li>
+          <li><a href="{{ url_for('analytics.teacher_dashboard') }}">Analytics</a></li>
+          {% endif %}
           {% endif %}
         </ul>
         <div class="nav-user">
-          <a href="{{ url_for('auth.profile') }}" class="username"
-            >{{ session.get('username', '') }}</a
-          >
-          <a
-            href="{{ url_for('auth.logout') }}"
-            class="btn btn-sm btn-secondary"
-            >Logout</a
-          >
+          <button id="theme-toggle" class="btn btn-icon theme-toggle" aria-label="Toggle theme">
+            <span class="light-icon">☀️</span>
+            <span class="dark-icon">🌙</span>
+          </button>
+          {% if session.get('user_id') %}
+            <a href="{{ url_for('auth.profile') }}" class="username"
+              >{{ session.get('username', '') }}</a
+            >
+            <a
+              href="{{ url_for('auth.logout') }}"
+              class="btn btn-sm btn-secondary"
+              >Logout</a
+            >
+          {% else %}
+            {% if request.endpoint != 'auth.login' and request.endpoint != 'auth.register' %}
+              <a href="{{ url_for('auth.login') }}" class="btn btn-sm btn-primary">Login</a>
+              <a href="{{ url_for('auth.register') }}" class="btn btn-sm btn-secondary">Register</a>
+            {% endif %}
+          {% endif %}
         </div>
       </div>
     </nav>
-    {% endif %} {% with messages = get_flashed_messages(with_categories=true) %}
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     <div class="container">
       <div class="flash-messages">
@@ -68,5 +88,21 @@
         </p>
       </div>
     </footer>
+
+    <script>
+      // Theme toggle functionality
+      document.addEventListener('DOMContentLoaded', () => {
+        const themeToggle = document.getElementById('theme-toggle');
+        const htmlElement = document.documentElement;
+
+        themeToggle.addEventListener('click', () => {
+          const currentTheme = htmlElement.getAttribute('data-theme');
+          const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+          
+          htmlElement.setAttribute('data-theme', newTheme);
+          localStorage.setItem('theme', newTheme);
+        });
+      });
+    </script>
   </body>
 </html>

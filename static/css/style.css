@@ -8,13 +8,14 @@
 
 /* --- CSS Variables --- */
 :root {
-  --bg-primary: #0f0f1a;
-  --bg-secondary: #1a1a2e;
-  --bg-card: #16213e;
-  --bg-card-hover: #1a2744;
-  --text-primary: #e8e8f0;
-  --text-secondary: #a0a0b8;
-  --text-muted: #6b6b80;
+  /* Light Theme Variables (Default) */
+  --bg-primary: #f4f6f9;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f8f9fa;
+  --text-primary: #2d3748;
+  --text-secondary: #4a5568;
+  --text-muted: #718096;
   --accent-primary: #6c63ff;
   --accent-secondary: #ff6584;
   --accent-success: #2ecc71;
@@ -24,16 +25,38 @@
   --gradient-primary: linear-gradient(135deg, #6c63ff, #3b82f6);
   --gradient-secondary: linear-gradient(135deg, #ff6584, #ff8a5c);
   --gradient-success: linear-gradient(135deg, #2ecc71, #27ae60);
-  --gradient-card: linear-gradient(145deg, #16213e, #1a1a2e);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
-  --shadow-glow: 0 0 20px rgba(108, 99, 255, 0.3);
+  --gradient-card: linear-gradient(145deg, #ffffff, #f8f9fa);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --shadow-glow: 0 0 20px rgba(108, 99, 255, 0.2);
+  --border-color: rgba(0, 0, 0, 0.08);
+  --header-bg: rgba(255, 255, 255, 0.85);
+
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] {
+  /* Dark Theme Variables */
+  --bg-primary: #0f0f1a;
+  --bg-secondary: #1a1a2e;
+  --bg-card: #16213e;
+  --bg-card-hover: #1a2744;
+  --text-primary: #e8e8f0;
+  --text-secondary: #a0a0b8;
+  --text-muted: #6b6b80;
+
+  --gradient-card: linear-gradient(145deg, #16213e, #1a1a2e);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 20px rgba(108, 99, 255, 0.3);
+  --border-color: rgba(108, 99, 255, 0.15);
+  --header-bg: rgba(15, 15, 26, 0.85);
 }
 
 /* --- Reset & Base --- */
@@ -109,10 +132,10 @@ a:hover {
 
 /* --- Navigation --- */
 .navbar {
-  background: rgba(15, 15, 26, 0.85);
+  background: var(--header-bg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(108, 99, 255, 0.15);
+  border-bottom: 1px solid var(--border-color);
   padding: 0 24px;
   position: sticky;
   top: 0;
@@ -165,6 +188,43 @@ a:hover {
 .nav-user .username {
   color: var(--text-secondary);
   font-size: 0.85rem;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  padding: 0;
+  box-shadow: var(--shadow-sm);
+}
+.theme-toggle:hover {
+  background: var(--bg-card-hover);
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Hide/show icons based on theme */
+:root .dark-icon {
+  display: none;
+}
+:root .light-icon {
+  display: block;
+}
+
+[data-theme="dark"] .dark-icon {
+  display: block;
+}
+[data-theme="dark"] .light-icon {
+  display: none;
 }
 .nav-user .level-badge {
   font-size: 0.75rem;
@@ -235,13 +295,13 @@ a:hover {
 /* --- Cards --- */
 .card {
   background: var(--gradient-card);
-  border: 1px solid rgba(108, 99, 255, 0.1);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 24px;
   transition: var(--transition);
 }
 .card:hover {
-  border-color: rgba(108, 99, 255, 0.25);
+  border-color: var(--border-color);
   box-shadow: var(--shadow-glow);
   transform: translateY(-2px);
 }
@@ -300,7 +360,7 @@ a:hover {
 /* --- Stat Cards --- */
 .stat-card {
   background: var(--gradient-card);
-  border: 1px solid rgba(108, 99, 255, 0.1);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 24px;
   text-align: center;
@@ -394,7 +454,7 @@ a:hover {
 }
 .auth-card {
   background: var(--gradient-card);
-  border: 1px solid rgba(108, 99, 255, 0.15);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-xl);
   padding: 48px;
   width: 100%;
@@ -431,13 +491,17 @@ a:hover {
 .form-group select {
   width: 100%;
   padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(108, 99, 255, 0.15);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
   font-size: 0.95rem;
   font-family: "Inter", sans-serif;
   transition: var(--transition);
+}
+.form-group select option {
+  background: var(--bg-card);
+  color: var(--text-primary);
 }
 .form-group input:focus,
 .form-group select:focus {
@@ -458,7 +522,7 @@ a:hover {
 /* --- Courses --- */
 .course-card {
   background: var(--gradient-card);
-  border: 1px solid rgba(108, 99, 255, 0.1);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 24px;
   transition: var(--transition);
@@ -518,8 +582,8 @@ a:hover {
   align-items: center;
   gap: 16px;
   padding: 16px 20px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(108, 99, 255, 0.08);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   margin-bottom: 8px;
   transition: var(--transition);
@@ -528,7 +592,7 @@ a:hover {
   color: var(--text-primary);
 }
 .lesson-item:hover {
-  background: rgba(108, 99, 255, 0.08);
+  background: var(--bg-card-hover);
   border-color: rgba(108, 99, 255, 0.2);
   color: var(--text-primary);
 }
@@ -548,7 +612,7 @@ a:hover {
 .lesson-content {
   padding: 32px;
   background: var(--gradient-card);
-  border: 1px solid rgba(108, 99, 255, 0.1);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   line-height: 1.8;
 }
@@ -569,7 +633,8 @@ a:hover {
   margin-bottom: 6px;
 }
 .lesson-content pre {
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   padding: 16px;
   border-radius: var(--radius-sm);
   overflow-x: auto;
@@ -587,7 +652,7 @@ a:hover {
 }
 .question-card {
   background: var(--gradient-card);
-  border: 1px solid rgba(108, 99, 255, 0.1);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 28px;
   margin-bottom: 20px;
@@ -627,15 +692,15 @@ a:hover {
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(108, 99, 255, 0.1);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: var(--transition);
   font-size: 0.9rem;
 }
 .option-item label:hover {
-  background: rgba(108, 99, 255, 0.08);
+  background: var(--bg-card-hover);
   border-color: rgba(108, 99, 255, 0.25);
 }
 .option-item input[type="radio"]:checked + label {
@@ -665,7 +730,7 @@ a:hover {
   text-align: center;
   padding: 40px;
   background: var(--gradient-card);
-  border: 1px solid rgba(108, 99, 255, 0.1);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-xl);
   margin-bottom: 32px;
 }
@@ -709,7 +774,7 @@ a:hover {
 .leaderboard-table td {
   padding: 16px;
   background: var(--gradient-card);
-  border: 1px solid rgba(108, 99, 255, 0.08);
+  border: 1px solid var(--border-color);
   font-size: 0.9rem;
 }
 .leaderboard-table tr td:first-child {
