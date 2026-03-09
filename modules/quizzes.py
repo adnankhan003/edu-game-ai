@@ -13,6 +13,8 @@ quizzes_bp = Blueprint('quizzes', __name__)
 def take_quiz(quiz_id):
     if 'user_id' not in session:
         return redirect(url_for('auth.login'))
+    if session.get('role') == 'teacher':
+        return redirect(url_for('analytics.teacher_dashboard'))
 
     quiz = get_quiz_by_id(quiz_id)
     if not quiz:
@@ -27,6 +29,8 @@ def take_quiz(quiz_id):
 def submit_quiz(quiz_id):
     if 'user_id' not in session:
         return redirect(url_for('auth.login'))
+    if session.get('role') == 'teacher':
+        return redirect(url_for('analytics.teacher_dashboard'))
 
     user_id = session['user_id']
     quiz = get_quiz_by_id(quiz_id)

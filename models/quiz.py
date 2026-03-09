@@ -66,6 +66,7 @@ def get_all_results():
            JOIN quizzes q ON qr.quiz_id = q.id
            JOIN courses c ON q.course_id = c.id
            JOIN users u ON qr.user_id = u.id
+           WHERE u.role != 'teacher'
            ORDER BY qr.completed_at DESC"""
     ).fetchall()
     conn.close()

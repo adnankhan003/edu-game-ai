@@ -34,10 +34,12 @@
         </a>
         <ul class="nav-links">
           {% if session.get('user_id') %}
+          {% if session.get('role') != 'teacher' %}
           <li><a href="{{ url_for('auth.dashboard') }}">Dashboard</a></li>
           <li><a href="{{ url_for('courses.course_list') }}">Courses</a></li>
           <li><a href="{{ url_for('gamification.leaderboard') }}">Leaderboard</a></li>
           <li><a href="{{ url_for('ml.recommendations') }}">AI Insights</a></li>
+          {% endif %}
           {% if session.get('role') == 'teacher' %}
           <li><a href="{{ url_for('analytics.teacher_dashboard') }}">Analytics</a></li>
           {% endif %}

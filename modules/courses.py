@@ -13,6 +13,8 @@ courses_bp = Blueprint('courses', __name__)
 def course_list():
     if 'user_id' not in session:
         return redirect(url_for('auth.login'))
+    if session.get('role') == 'teacher':
+        return redirect(url_for('analytics.teacher_dashboard'))
 
     courses = get_all_courses()
     return render_template('courses.html', courses=courses)
@@ -22,6 +24,8 @@ def course_list():
 def course_detail(course_id):
     if 'user_id' not in session:
         return redirect(url_for('auth.login'))
+    if session.get('role') == 'teacher':
+        return redirect(url_for('analytics.teacher_dashboard'))
 
     course = get_course_by_id(course_id)
     if not course:
@@ -36,6 +40,8 @@ def course_detail(course_id):
 def view_lesson(course_id, lesson_id):
     if 'user_id' not in session:
         return redirect(url_for('auth.login'))
+    if session.get('role') == 'teacher':
+        return redirect(url_for('analytics.teacher_dashboard'))
 
     course = get_course_by_id(course_id)
     lesson = get_lesson_by_id(lesson_id)

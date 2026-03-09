@@ -74,6 +74,8 @@ def logout():
 def dashboard():
     if 'user_id' not in session:
         return redirect(url_for('auth.login'))
+    if session.get('role') == 'teacher':
+        return redirect(url_for('analytics.teacher_dashboard'))
 
     user_id = session['user_id']
     user = get_user_by_id(user_id)
@@ -100,6 +102,8 @@ def dashboard():
 def profile():
     if 'user_id' not in session:
         return redirect(url_for('auth.login'))
+    if session.get('role') == 'teacher':
+        return redirect(url_for('analytics.teacher_dashboard'))
 
     user_id = session['user_id']
     user = get_user_by_id(user_id)

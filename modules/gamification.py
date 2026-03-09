@@ -11,6 +11,8 @@ gamification_bp = Blueprint('gamification', __name__)
 def leaderboard():
     if 'user_id' not in session:
         return redirect(url_for('auth.login'))
+    if session.get('role') == 'teacher':
+        return redirect(url_for('analytics.teacher_dashboard'))
 
     leaders = get_leaderboard(20)
 

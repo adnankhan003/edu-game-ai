@@ -239,6 +239,8 @@ DIFFICULTY_LABELS = {0: 'Easier', 1: 'Same Level', 2: 'Harder'}
 def recommendations():
     if 'user_id' not in session:
         return redirect(url_for('auth.login'))
+    if session.get('role') == 'teacher':
+        return redirect(url_for('analytics.teacher_dashboard'))
 
     user_id = session['user_id']
     quiz_score_avg, learning_time, activity_level = get_user_ml_features(user_id)
